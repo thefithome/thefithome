@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 const {
   title = "The Fit Home",
   description = "Tu gimnasio en casa optimizado"
@@ -22,8 +24,10 @@ import Header from '../components/Header.astro';
   </head>
 
   <body>
-	<Header />
-    
+  <Header />
+
+  <main>
     <slot />
-  </body>
+  </main>
+</body>
 </html>
