@@ -6,6 +6,8 @@ const {
 
 const url = new URL(Astro.request.url);
 const canonical = url.href;
+
+import Header from '../components/Header.astro';
 ---
 
 <!doctype html>
@@ -20,7 +22,8 @@ const canonical = url.href;
   </head>
 
   <body>
-    <h1>LAYOUT FUNCIONA</h1>
+	<Header />
+    
     <slot />
   </body>
 </html>
