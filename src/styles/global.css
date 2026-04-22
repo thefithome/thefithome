@@ -66,9 +66,56 @@ nav a:hover {
 .logo img {
   height: 70px;
   display: block;
-filter: invert(1);
-
+  filter: invert(1);
 }
+
+
+/* ========================= */
+/* HERO (imagen + overlay)   */
+/* ========================= */
+
+/* CONTENEDOR HERO */
+.hero {
+  position: relative; /* necesario para overlay */
+  background-image: var(--bg-image); /* imagen dinámica desde Astro */
+  background-size: cover;
+  background-position: center;
+  padding: 120px 20px; /* más espacio vertical tipo landing */
+  color: white; /* texto claro sobre fondo oscuro */
+}
+
+/* OVERLAY OSCURO (legibilidad texto) */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.6),
+    rgba(0,0,0,0.4)
+  ); /* mejora visual vs negro plano */
+  /* añadido: degradado para mejor contraste */
+}
+
+/* CONTENIDO ENCIMA DE LA IMAGEN */
+.hero-content {
+  position: relative; /* lo pone por encima del overlay */
+  z-index: 1; /* asegura que esté visible */
+  max-width: 800px;
+}
+
+/* añadido: mejora tipografía del hero */
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* añadido: espaciado de párrafos dentro del hero */
+.hero p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
 
 /*Espacio lateral*/
 main {

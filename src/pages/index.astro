@@ -1,133 +1,83 @@
-
 ---
-import Layout from '../layouts/Layout.astro';
-
+import Layout from '../layouts/Layout.astro'
 import { client } from '../lib/sanity'
+import { renderPortableText } from '../lib/portableText'
+import { urlFor } from '../lib/sanityImage'
 
-const posts = await client.fetch(`*[_type == "post"]{
-  title,
-  slug
-}`)
+const home = await client.fetch(`*[_type == "home"][0]`)
 ---
 
-<Layout 
-  title="Monta tu gimnasio completo | The Fit Home"
-  description="Guía completa para montar tu gimnasio en casa de forma eficiente"
+<Layout title="The Fit Home">
+
+  <!-- HERO -->
+  <section 
+  class="hero"
+  style={`--bg-image: url(${urlFor(home.heroImage).url()})`}
 >
-  <h1>Crea tu gym personalizado en casa desde cero</h1>
-
-  <h2>Test Sanity</h2>
-
-{posts.map(post => (
-  <div>
-    <p>{post.title}</p>
+  <div class="hero-content">
+    <h1>{home.heroTitle}</h1>
+    <div set:html={renderPortableText(home.heroText)} />
   </div>
-))}
+</section>
 
-<p>
-Montar un gimnasio en casa no tiene por qué ser complicado. En The Fit Home te ayudamos a diseñar tu espacio ideal paso a paso, según tu nivel, tus objetivos y el espacio que tengas disponible.
-</p>
+  <!-- VALUE PROPS -->
+  <section>
+    <h2>{home.valuePropsTitle}</h2>
+    <ul>
+      {home.valueProps?.map(item => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  </section>
 
-<p>
-Sin rodeos, sin perder dinero y sin caer en el típico error de comprar por impulso.
-</p>
+  <!-- INTRO + FACTORES -->
+  <section>
+    <h2>{home.introTitle}</h2>
+    <div set:html={renderPortableText(home.introText)} />
 
-<details class="toc">
-  <summary>Contenido de la página</summary>
-  <ul>
-    <li><a href="#como-empezar">Cómo empezar</a></li>
-    <li><a href="#equipamiento">Equipamiento esencial</a></li>
-    <li><a href="#errores">Errores comunes</a></li>
-    <li><a href="#objetivos">Entrenamiento según objetivos</a></li>
-  </ul>
-</details>
+    {home.factors?.map(factor => (
+      <div>
+        <h3>{factor.title}</h3>
+        <div set:html={renderPortableText(factor.text)} />
+      </div>
+    ))}
+  </section>
 
-<h2 id="como-empezar">Cómo empezar tu gym en casa</h2>
-<p>
-Antes de comprar nada, necesitas tener claro tres cosas: cuánto espacio tienes, qué tipo de entrenamiento quieres hacer y cuál es tu presupuesto real. No todos los gimnasios en casa son iguales, y copiar setups de internet suele acabar en malas decisiones.
-</p>
+  <!-- CATEGORÍAS -->
+  <section>
+    <h2>{home.categoriesTitle}</h2>
 
-<p>
-Empieza por lo básico y construye sobre eso. Un buen home gym no se monta en un día, se optimiza con el tiempo.
-</p>
+    <div class="categories">
+      {home.categories?.map(cat => (
+        <a href={`/${cat.slug}`} class="category-card">
+          <span class="icon">{cat.icon}</span>
+          <h3>{cat.title}</h3>
+          <p>{cat.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
 
-<h2 id="equipamiento">Equipamiento esencial</h2>
-<p>
-No necesitas llenar tu casa de máquinas. Con el equipamiento adecuado puedes cubrir el 90% de los entrenamientos. La clave está en elegir bien desde el principio.
-</p>
+  <!-- ERRORES -->
+  <section>
+    <h2>{home.mistakesTitle}</h2>
+    <ul>
+      {home.mistakes?.map(item => (
+        <li>{item}</li>
+      ))}
+    </ul>
+  </section>
 
-<ul>
-  <li>Mancuernas ajustables</li>
-  <li>Banco de entrenamiento</li>
-  <li>Suelo protector</li>
-  <li>Rack o estructura básica</li>
-</ul>
+  <!-- FAQ -->
+  <section>
+    <h2>{home.faqTitle}</h2>
 
-<p>
-A partir de aquí, puedes ir ampliando según tus objetivos y tu progreso.
-</p>
-
-<h2 id="errores">Errores comunes al montar un home gym</h2>
-<p>
-El error más habitual es comprar sin estrategia. También es muy común no medir el espacio correctamente o dejarse llevar por productos que no se adaptan a tus necesidades reales.
-</p>
-
-<p>
-Otro fallo típico es querer replicar un gimnasio comercial en casa. No lo necesitas. Necesitas algo funcional.
-</p>
-
-<h2 id="objetivos">Entrenamiento según tus objetivos</h2>
-<p>
-Tu gimnasio debe adaptarse a lo que buscas. No es lo mismo entrenar para ganar músculo que para perder grasa o mejorar tu movilidad.
-</p>
-
-<p>
-Por eso, en esta web no encontrarás recomendaciones genéricas. Cada decisión de compra está pensada para un contexto concreto.
-</p>
-
-<h2>Explora por categorías</h2>
-
-<div class="categories">
-
-  <a href="/estructura/" class="category-card">
-    <span class="icon">🏗️</span>
-    <h3>Estructura</h3>
-  </a>
-    <p>La base de tu gimnasio: racks, bancos y soporte.</p>
-  
-
-  <a href="/peso-libre/" class="category-card">
-    <span class="icon">🏋️</span>
-    <h3>Peso libre</h3>
-  </a>
-    <p>Mancuernas, barras y discos para progresar de verdad.</p>
-
-
-  <a href="/maquinas/" class="category-card">
-    <span class="icon">🖥️</span>
-    <h3>Máquinas</h3>
-   </a>
-    <p>Opciones guiadas para entrenar con seguridad.</p>
-
-  <a href="/cardio/" class="category-card">
-    <span class="icon">🏃</span>
-    <h3>Cardio</h3>
-   </a>
-    <p>Cintas, bicicletas y equipos para resistencia.</p>
-
-  <a href="/movilidad/" class="category-card">
-    <span class="icon">🧘</span>
-    <h3>Movilidad</h3>
-   </a>
-    <p>Mejora tu recuperación y evita lesiones.</p>
-
-  <a href="/accesorios/" class="category-card">
-    <span class="icon">🎒</span>
-    <h3>Accesorios</h3>
-   </a>
-    <p>Pequeños detalles que marcan la diferencia.</p>
-</div>
-
-
+    {home.faq?.map(item => (
+      <details>
+        <summary>{item.question}</summary>
+        <div set:html={renderPortableText(item.answer)} />
+      </details>
+    ))}
+  </section>
 
 </Layout>
