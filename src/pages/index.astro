@@ -1,6 +1,13 @@
 
 ---
 import Layout from '../layouts/Layout.astro';
+
+import { client } from '../lib/sanity'
+
+const posts = await client.fetch(`*[_type == "post"]{
+  title,
+  slug
+}`)
 ---
 
 <Layout 
@@ -8,6 +15,14 @@ import Layout from '../layouts/Layout.astro';
   description="Guía completa para montar tu gimnasio en casa de forma eficiente"
 >
   <h1>Crea tu gym personalizado en casa desde cero</h1>
+
+  <h2>Test Sanity</h2>
+
+{posts.map(post => (
+  <div>
+    <p>{post.title}</p>
+  </div>
+))}
 
 <p>
 Montar un gimnasio en casa no tiene por qué ser complicado. En The Fit Home te ayudamos a diseñar tu espacio ideal paso a paso, según tu nivel, tus objetivos y el espacio que tengas disponible.
