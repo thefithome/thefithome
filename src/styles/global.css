@@ -189,3 +189,53 @@ main {
   text-align: center;
   margin-bottom: 0.8rem;
 }
+
+/* CATEGORÍAS (cards)        */
+
+/* contenedor grid */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  /* añadido: layout responsive tipo tarjetas */
+}
+
+/* tarjeta individual */
+.category-card {
+  display: block;
+  text-align: center; /* añadido: centra todo el contenido */
+  padding: 1.5rem 1rem;
+  border: 1px solid var(--color-border); /* añadido: borde suave */
+  border-radius: 12px;
+  background: var(--color-background-soft); /* añadido: fondo ligero */
+  text-decoration: none;
+  color: var(--color-text); /* añadido: evita el naranja por defecto */
+  transition: all 0.2s ease;
+}
+
+/* hover tarjeta */
+.category-card:hover {
+  transform: translateY(-4px); /* añadido: efecto elevación */
+  border-color: var(--color-accent); /* añadido: feedback visual */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* añadido: efecto pro */
+}
+
+/* títulos y texto centrados */
+.category-card h3,
+.category-card p {
+  text-align: center;
+  /* añadido: refuerzo de centrado */
+}
+
+/* quitar color naranja por defecto en enlaces dentro de cards */
+.category-card,
+.category-card:hover {
+  color: var(--color-text);
+  /* añadido: mantiene consistencia con el diseño */
+}
+
+/* opcional: solo el título cambia a naranja en hover */
+.category-card:hover h3 {
+  color: var(--color-accent);
+  /* añadido: microinteracción más fina */
+}

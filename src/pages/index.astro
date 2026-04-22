@@ -20,6 +20,7 @@ const home = await client.fetch(`*[_type == "home"][0]`)
   </div>
 </section>
 
+<main>
   <!-- VALUE PROPS -->
   <section>
     <h2>{home.valuePropsTitle}</h2>
@@ -79,5 +80,6 @@ const home = await client.fetch(`*[_type == "home"][0]`)
       </details>
     ))}
   </section>
+  </main>
 
 </Layout>
