@@ -8,6 +8,8 @@ const {
 
 const url = new URL(Astro.request.url);
 const canonical = url.href;
+const faq = Astro.props.faq || [];
+
 
 import Header from '../components/Header.astro';
 ---
@@ -26,5 +28,23 @@ import Header from '../components/Header.astro';
   <body>
   <Header />
     <slot />
+    {faq.length > 0 && (
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faq.map(item => ({
+      "@type": "Question",
+      "name": item.question || '',
+      "acceptedAnswer": {
+        "@type": "Answer",
+       "text": item.answer
+  ?.map(block =>
+    block.children?.map(child => child.text).join('')
+  )
+  .join('\n') || ''
+      }
+    }))
+  })} />
+)}
 </body>
 </html>

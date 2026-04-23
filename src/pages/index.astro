@@ -7,7 +7,9 @@ import { urlFor } from '../lib/sanityImage'
 const home = await client.fetch(`*[_type == "home"][0]`)
 ---
 
-<Layout title="The Fit Home">
+<Layout title="The Fit Home"
+  faq={home.faq}
+>
 
   <!-- HERO -->
   <section 
@@ -16,7 +18,7 @@ const home = await client.fetch(`*[_type == "home"][0]`)
 >
   <div class="hero-content">
     <h1>{home.heroTitle}</h1>
-    <div set:html={renderPortableText(home.heroText)} />
+    <div class="hero-text"set:html={renderPortableText(home.heroText)} />
   </div>
 </section>
 
@@ -71,7 +73,7 @@ const home = await client.fetch(`*[_type == "home"][0]`)
 
   <!-- FAQ -->
   <section>
-    <h2>{home.faqTitle}</h2>
+    <h3>{home.faqTitle}</h3>
 
     {home.faq?.map(item => (
       <details>
