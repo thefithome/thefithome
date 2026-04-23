@@ -42,25 +42,105 @@ a:hover {
   color: var(--color-accent-hover);
 }
 
-/* Navegación */
+/* ========================= */
+/* NAVEGACIÓN                */
+/* ========================= */
 
-nav ul {
+/* contenedor */
+.nav-container {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; /* necesario para menú mobile */
+}
+
+/* menú desktop */
+.nav-links {
   gap: 1.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
+  z-index: 100;
 }
 
-nav a {
+/* enlaces */
+.nav-links a {
   color: white;
   text-decoration: none;
   font-weight: bold;
 }
 
-nav a:hover {
+.nav-links a:hover {
   text-decoration: underline;
 }
+
+
+/* ========================= */
+/* HAMBURGUESA               */
+/* ========================= */
+
+.hamburger {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* icono */
+.hamburger .icon::after {
+  content: "☰";
+}
+
+/* icono cuando está abierto */
+.hamburger.active .icon::after {
+  content: "✕";
+}
+
+.nav-links a:hover {
+  color: var(--color-accent);
+}
+
+
+/* ========================= */
+/* RESPONSIVE (mobile)       */
+/* ========================= */
+
+@media (min-width: 769px) {
+  .nav-links {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* mostrar botón */
+  .hamburger {
+    display: block;
+    margin-left: auto; /* empuja el menú a la derecha */
+
+  }
+
+  /* ocultar menú por defecto */
+  .nav-links {
+    display: none !important;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background: var(--color-primary);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.5rem;
+  }
+
+  /* menú activo */
+  .nav-links.active {
+    display: flex !important;
+  }
+}
+
 
 /* Logo menu */
 .logo img {
@@ -168,6 +248,7 @@ main {
 /* ITEMS */
 .toc li {
   margin: 0.5rem 0;
+  
 }
 
 /* LINKS */
@@ -180,6 +261,10 @@ main {
 /* Hover links (clave UX) */
 .toc a:hover {
   color: var(--color-accent);
+}
+
+li {
+  margin-bottom: 0.5rem;
 }
 
 /* Iconos */
