@@ -1,0 +1,36 @@
+---
+export const prerender = true;
+
+import Layout from '../../layouts/Layout.astro'
+import { client } from '../../lib/sanity'
+import { renderPortableText } from '../../lib/portableText'
+
+// 👇 FORZAMOS RUTA
+export async function getStaticPaths() {
+  return [
+    {
+      params: { slug: 'estructura-gimnasio' }
+    }
+  ]
+}
+
+// 👇 usamos params
+const slug = Astro.params.slug
+
+// 👇 FETCH FIJO PARA PROBAR
+const post = await client.fetch(
+  `*[_type == "post" && slug.current == "estructura-gimnasio"][0]`
+)
+---
+
+<Layout 
+  title={post?.seoTitle || post?.title}
+  description={post?.description}
+  faq={post?.faq}
+>
+  <h1>{post?.title}</h1>
+
+  {post?.intro && (
+    <div set:html={renderPortableText(post.intro)} />
+  )}
+</Layout>
