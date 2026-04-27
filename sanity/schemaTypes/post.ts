@@ -59,7 +59,10 @@ export default defineType({
       name: 'intro',
       title: 'Texto introductorio',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [{ type: 'block' },
+        { type: 'image' }
+      ],
+      
     }),
 
     // BLOQUE: PRODUCTOS CLAVE (GRID CLICABLE)

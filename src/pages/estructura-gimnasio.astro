@@ -1,9 +1,9 @@
 ---
 export const prerender = true;
 
-import Layout from '../../layouts/Layout.astro'
-import { client } from '../../lib/sanity'
-import { renderPortableText } from '../../lib/portableText'
+import Layout from '../layouts/Layout.astro'
+import { client } from '../lib/sanity'
+import { renderPortableText } from '../lib/portableText'
 
 // 👇 FORZAMOS RUTA
 export async function getStaticPaths() {
