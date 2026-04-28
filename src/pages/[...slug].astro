@@ -1,0 +1,118 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro'
+import { client } from '../lib/sanity'
+import { urlFor } from '../lib/sanityImage'
+
+// 🔹 STATIC PATHS (OBLIGATORIO)
+export async function getStaticPaths() {
+  const posts = await client.fetch(`
+    *[_type == "post" && defined(slug.current)]{
+      "slug": slug.current,
+      "parentId": parent._ref
+    }
+  `)
+
+  const parents = await client.fetch(`
+    *[_type == "post"]{
+      _id,
+      "slug": slug.current
+    }
+  `)
+
+  return posts.map((post) => {
+    const parent = parents.find(p => p._id === post.parentId)
+
+    const fullSlug = parent?.slug
+      ? `${parent.slug}/${post.slug}`
+      : post.slug
+
+    return {
+      params: {
+        slug: fullSlug
+      }
+    }
+  })
+}
+
+// 🔹 SLUG ACTUAL (sin errores TS)
+const slug = (Astro.params as any).slug
+
+// 🔹 FETCH
+const post = await client.fetch(
+  `*[_type == "post"]{
+    title,
+    seoTitle,
+    description,
+    content,
+    faq,
+    "slug": slug.current,
+    "parentId": parent->_id,
+    "parentSlug": parent->slug.current
+  }`
+).then(posts => {
+  return posts.find(p => {
+    const fullSlug = p.parentSlug
+      ? `${p.parentSlug}/${p.slug}`
+      : p.slug
+
+    return fullSlug === slug
+  })
+})
+---
+
+<Layout 
+  title={post?.seoTitle || post?.title || 'The Fit Home'}
+  description={post?.description}
+  faq={post?.faq}
+>
+
+  {post ? (
+    <>
+      <h1>{post.title}</h1>
+
+      {post.content?.map((block) => {
+
+        // 🧱 TEXTO
+        if (block._type === 'block') {
+
+          const children = block.children.map((child) => {
+            let text = child.text
+
+            if (child.marks?.includes('strong')) {
+              text = <strong>{text}</strong>
+            }
+
+            if (child.marks?.includes('em')) {
+              text = <em>{text}</em>
+            }
+
+            return text
+          })
+
+          if (block.style === 'h2') return <h2>{children}</h2>
+          if (block.style === 'h3') return <h3>{children}</h3>
+
+          return <p>{children}</p>
+        }
+
+        // 🖼️ IMÁGENES
+        if (block._type === 'image') {
+          return (
+            <img 
+              src={urlFor(block).url()} 
+              alt=""
+              style="margin: 1.5rem 0; border-radius: 8px;"
+            />
+          )
+        }
+
+      })}
+
+    </>
+  ) : (
+    <h1>404 - Página no encontrada</h1>
+  )}
+
+</Layout>

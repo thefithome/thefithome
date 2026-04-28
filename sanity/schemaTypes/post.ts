@@ -1,4 +1,4 @@
-import {defineType, defineField} from 'sanity'
+import { defineType, defineField } from 'sanity'
 
 export default defineType({
   name: 'post',
@@ -9,11 +9,11 @@ export default defineType({
 
     // SEO BÁSICO
     defineField({
-  name: 'seoTitle',
-  title: 'SEO Title (<title>)',
-  type: 'string',
-  description: 'Título para Google (recomendado: 50-60 caracteres)',
-}),
+      name: 'seoTitle',
+      title: 'SEO Title (<title>)',
+      type: 'string',
+      description: 'Título para Google (50-60 caracteres)',
+    }),
     defineField({
       name: 'title',
       title: 'H1',
@@ -31,7 +31,7 @@ export default defineType({
       type: 'string',
     }),
 
-    // TIPO DE CONTENIDO (CLAVE)
+    // 🔹 TIPO DE CONTENIDO
     defineField({
       name: 'type',
       title: 'Tipo de contenido',
@@ -46,7 +46,7 @@ export default defineType({
       },
     }),
 
-    // JERARQUÍA (MUY IMPORTANTE)
+    // 🔹 JERARQUÍA
     defineField({
       name: 'parent',
       title: 'Página padre',
@@ -54,18 +54,18 @@ export default defineType({
       to: [{ type: 'post' }],
     }),
 
-    // HERO / INTRO
+    // 🔹 CONTENIDO PRINCIPAL
     defineField({
-      name: 'intro',
-      title: 'Texto introductorio',
+      name: 'content',
+      title: 'Contenido',
       type: 'array',
-      of: [{ type: 'block' },
+      of: [
+        { type: 'block' },
         { type: 'image' }
       ],
-      
     }),
 
-    // BLOQUE: PRODUCTOS CLAVE (GRID CLICABLE)
+    // 🔹 CARDS (ENLAZADO INTERNO)
     defineField({
       name: 'featuredItems',
       title: 'Elementos clave (cards)',
@@ -87,60 +87,7 @@ export default defineType({
       ],
     }),
 
-    // BLOQUE: GUÍA (H2 + TEXTO)
-    defineField({
-      name: 'guideTitle',
-      title: 'Título guía (H2)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'guideContent',
-      title: 'Contenido guía',
-      type: 'array',
-      of: [{ type: 'block' }],
-    }),
-
-    // BLOQUE: ELEMENTOS DETALLADOS (H3)
-    defineField({
-      name: 'sections',
-      title: 'Secciones (H3)',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            { name: 'title', title: 'Título', type: 'string' },
-            {
-              name: 'content',
-              title: 'Texto',
-              type: 'array',
-              of: [{ type: 'block' }],
-            },
-            {
-              name: 'image',
-              title: 'Imagen',
-              type: 'image',
-              options: { hotspot: true },
-            },
-          ],
-        },
-      ],
-    }),
-
-    // ERRORES (SEO)
-    defineField({
-      name: 'mistakesTitle',
-      title: 'Título errores (H2)',
-      type: 'string',
-    }),
-    defineField({
-      name: 'mistakes',
-      title: 'Errores comunes',
-      type: 'array',
-      of: [{ type: 'string' }],
-    }),
-
-    // FAQ (REUTILIZABLE)
+    // 🔹 FAQ
     defineField({
       name: 'faq',
       title: 'Preguntas frecuentes',
