@@ -7,22 +7,22 @@ import { urlFor } from '../lib/sanityImage'
 const home = await client.fetch(`*[_type == "home"][0]`)
 ---
 
-<Layout title="The Fit Home"
-  faq={home.faq}
->
+<Layout title="The Fit Home" faq={home.faq}>
 
-  <!-- HERO -->
+  <!-- HERO (FULL WIDTH) -->
   <section 
-  class="hero"
-  style={`--bg-image: url(${urlFor(home.heroImage).url()})`}
->
-  <div class="hero-content">
-    <h1>{home.heroTitle}</h1>
-    <div class="hero-text"set:html={renderPortableText(home.heroText)} />
-  </div>
-</section>
+    slot="fullwidth"
+    class="hero"
+    style={`--bg-image: url(${urlFor(home.heroImage).url()})`}
+  >
+    <div class="hero-content">
+      <h1>{home.heroTitle}</h1>
+      <div class="hero-text" set:html={renderPortableText(home.heroText)} />
+    </div>
+  </section>
 
-<main>
+  <!-- YA NO HAY <main> -->
+
   <!-- VALUE PROPS -->
   <section>
     <h2>{home.valuePropsTitle}</h2>
@@ -82,6 +82,5 @@ const home = await client.fetch(`*[_type == "home"][0]`)
       </details>
     ))}
   </section>
-  </main>
 
 </Layout>

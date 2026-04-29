@@ -27,7 +27,12 @@ import Header from '../components/Header.astro';
 
   <body>
   <Header />
+<slot name="fullwidth" />
+
+  <main>
     <slot />
+  </main>
+  
     {faq.length > 0 && (
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
