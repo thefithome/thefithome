@@ -5,61 +5,95 @@ import Layout from '../layouts/Layout.astro'
 import { client } from '../lib/sanity'
 import { urlFor } from '../lib/sanityImage'
 
-// 🔹 STATIC PATHS (OBLIGATORIO)
-export async function getStaticPaths() {
-  const posts = await client.fetch(`
-    *[_type == "post" && defined(slug.current)]{
-      "slug": slug.current,
-      "parentId": parent._ref
-    }
-  `)
-
-  const parents = await client.fetch(`
-    *[_type == "post"]{
-      _id,
-      "slug": slug.current
-    }
-  `)
-
-  return posts.map((post) => {
-    const parent = parents.find(p => p._id === post.parentId)
-
-    const fullSlug = parent?.slug
-      ? `${parent.slug}/${post.slug}`
-      : post.slug
-
-    return {
-      params: {
-        slug: fullSlug
-      }
-    }
-  })
-}
-
-// 🔹 SLUG ACTUAL (sin errores TS)
-const slug = (Astro.params as any).slug
-
 // 🔹 FETCH
-const post = await client.fetch(
-  `*[_type == "post"]{
+const posts = await client.fetch(`
+  *[_type == "post"]{
     title,
     seoTitle,
     description,
-    content,
-    faq,
-    "slug": slug.current,
-    "parentId": parent->_id,
-    "parentSlug": parent->slug.current
-  }`
-).then(posts => {
-  return posts.find(p => {
-    const fullSlug = p.parentSlug
-      ? `${p.parentSlug}/${p.slug}`
-      : p.slug
 
-    return fullSlug === slug
-  })
+    content[]{
+      ...,
+      asset->{
+        metadata{
+          dimensions
+        }
+      }
+    },
+
+    featuredItems[]{
+      title,
+      description,
+      link->{
+        slug
+      }
+    },
+
+    faq[]{
+      question,
+      answer
+    },
+
+    "slug": slug.current,
+    "parentSlug": parent->slug.current
+  }
+`)
+
+const slug = (Astro.params as any).slug
+
+const post = posts.find(p => {
+  const fullSlug = p.parentSlug
+    ? `${p.parentSlug}/${p.slug}`
+    : p.slug
+
+  return fullSlug === slug
 })
+
+/* =========================
+   🔧 HELPERS
+   ========================= */
+
+const getText = (block) =>
+  block.children?.map(child => child.text).join('') || ''
+
+const slugify = (text) =>
+  text
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+
+/* =========================
+ TOC 
+========================= */
+
+const toc = []
+
+// 1. H2 del contenido principal
+post?.content?.forEach(block => {
+  if (block._type === 'block' && block.style === 'h2') {
+    const text = getText(block)
+    toc.push({
+      text,
+      id: slugify(text)
+    })
+  }
+})
+
+// 2. H2 de "Contenido relacionado"
+if (post?.featuredItems?.length > 0) {
+  toc.push({
+    text: 'Contenido relacionado',
+    id: 'contenido-relacionado'
+  })
+}
+
+// 3. H2 de FAQ
+if (post?.faq?.length > 0) {
+  toc.push({
+    text: 'Preguntas frecuentes',
+    id: 'preguntas-frecuentes'
+  })
+}
 ---
 
 <Layout 
@@ -68,51 +102,126 @@ const post = await client.fetch(
   faq={post?.faq}
 >
 
-  {post ? (
-    <>
+{post ? (
+  <div class="layout">
+
+   {/* 🔹 TOC LATERAL */}
+{toc?.length > 0 && (
+  <aside class="toc" id="toc">
+
+    <button type="button" class="toc-toggle" id="tocToggle">
+      Contenido
+    </button>
+
+    <ul class="toc-list">
+      {toc.map((item, i) => (
+        <li key={`toc-${i}`}>
+          <a href={`#${item.id}`}>
+            {item.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </aside>
+)}
+
+    {/* 🔹 CONTENT */}
+    <article class="content">
+
       <h1>{post.title}</h1>
 
-      {post.content?.map((block) => {
+      {post.content?.map((block, i) => {
 
-        // 🧱 TEXTO
+        // 🧱 TEXT
         if (block._type === 'block') {
+          const text = getText(block)
 
-          const children = block.children.map((child) => {
-            let text = child.text
+          if (block.style === 'h2') {
+            const id = slugify(text)
+            return <h2 id={id} key={`h2-${i}`}>{text}</h2>
+          }
 
-            if (child.marks?.includes('strong')) {
-              text = <strong>{text}</strong>
-            }
+          if (block.style === 'h3') {
+            return <h3 key={`h3-${i}`}>{text}</h3>
+          }
 
-            if (child.marks?.includes('em')) {
-              text = <em>{text}</em>
-            }
-
-            return text
-          })
-
-          if (block.style === 'h2') return <h2>{children}</h2>
-          if (block.style === 'h3') return <h3>{children}</h3>
-
-          return <p>{children}</p>
+          return <p key={`p-${i}`}>{text}</p>
         }
 
-        // 🖼️ IMÁGENES
+        // 🖼️ IMAGES
         if (block._type === 'image') {
+          const width = block.asset?.metadata?.dimensions?.width
+          const height = block.asset?.metadata?.dimensions?.height
+
           return (
-            <img 
-              src={urlFor(block).url()} 
-              alt=""
-              style="margin: 1.5rem 0; border-radius: 8px;"
+            <img
+              key={`img-${i}`}
+              src={urlFor(block).url()}
+              width={width}
+              height={height}
             />
           )
         }
 
+        return null
       })}
 
-    </>
-  ) : (
-    <h1>404 - Página no encontrada</h1>
-  )}
+      {/* 🔹 CARDS */}
+      {post.featuredItems?.length > 0 && (
+<section id="productos-recomendados">
+          <h2>Productos recomendados</h2>
+
+          {post.featuredItems.map((item, i) => (
+            <div key={`card-${i}`}>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+
+              {item.link?.slug?.current && (
+                <a href={`/${item.link.slug.current}`}>
+                  Ver más
+                </a>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {/* 🔹 FAQ */}
+      {post.faq?.length > 0 && (
+<section id="preguntas-frecuentes">
+          <h2>Preguntas frecuentes</h2>
+
+          {post.faq.map((item, i) => (
+            <div key={`faq-${i}`}>
+              <h3>{item.question}</h3>
+
+              {item.answer?.map((block, j) => (
+                <p key={`faq-a-${i}-${j}`}>
+                  {block.children?.map(child => child.text)}
+                </p>
+              ))}
+            </div>
+          ))}
+        </section>
+      )}
+
+    </article>
+
+  </div>
+) : (
+  <h1>404 - Página no encontrada</h1>
+)}
+
+<script is:inline>
+  const toc = document.getElementById('toc')
+  const toggle = document.getElementById('tocToggle')
+
+  if (toc && toggle) {
+    toggle.addEventListener('click', () => {
+      toc.classList.toggle('open')
+    })
+  }
+</script>
 
 </Layout>

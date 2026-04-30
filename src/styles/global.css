@@ -150,6 +150,15 @@ a:hover {
   filter: invert(1);
 }
 
+/*Imágenes*/
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
 
 /* ========================= */
 /* HERO (imagen + overlay)   */
@@ -209,70 +218,94 @@ main {
   padding: 2rem;
 }
 
-/*TOC */
+
+
+/* ========================= */
+/* TOC LATERAL COLAPSABLE   */
+/* ========================= */
+
 .toc {
   position: sticky;
-  top: 1rem;
-  margin-bottom: 2rem;
-  z-index: 10;
+  top: 6rem;
+  width: 260px;
+  align-self: flex-start;
 }
 
-/* BOTÓN (summary) */
-.toc summary {
-  display: inline-block;
+/* botón */
+.toc-toggle {
+  width: 100%;
   background: var(--color-primary);
   color: white;
+  border: none;
   padding: 0.7rem 1rem;
   border-radius: 8px;
-  cursor: pointer;
   font-weight: 600;
-  list-style: none;
-  transition: background 0.2s ease;
+  cursor: pointer;
+  text-align: left;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Hover botón */
-.toc summary:hover {
-  background: var(--color-primary-soft);
+/* flechita */
+.toc-toggle::after {
+  content: "▾";
+  transition: transform 0.2s ease;
 }
 
-/* Quitar flecha por defecto */
-.toc summary::-webkit-details-marker {
-  display: none;
+/* cuando está abierto */
+.toc.open .toc-toggle::after {
+  transform: rotate(180deg);
 }
 
-/* LISTA */
-.toc ul {
+/* lista */
+.toc-list {
   margin-top: 0.8rem;
   padding: 1rem;
+  list-style: none;
+
   background: var(--color-background-soft);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  list-style: none;
+   max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.25s ease;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+
+  transition: all 0.25s ease;
 }
 
-/* ITEMS */
-.toc li {
-  margin: 0.5rem 0;
-  
+/* estado abierto */
+.toc.open .toc-list {
+  max-height: 500px;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* LINKS */
+/* links */
 .toc a {
+  display: block;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+  color: var(--color-text-light);
   text-decoration: none;
-  color: var(--color-text);
-  transition: color 0.2s ease;
+  transition: all 0.15s ease;
+  border-left: 2px solid transparent;
+  padding-left: 6px;
 }
 
-/* Hover links (clave UX) */
 .toc a:hover {
-  color: var(--color-accent);
+    color: var(--color-accent);
+  border-left: 2px solid var(--color-accent);
+  padding-left: 10px;
 }
 
-li {
-  margin-bottom: 0.5rem;
-}
-
-/* Iconos */
+/* ICONOS */
 .icon {
   font-size: 2.8rem;
   display: block;
